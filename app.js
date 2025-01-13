@@ -27,6 +27,29 @@ app.get('/api/v1/explores', (req, res) => {
   });
 });
 
+app.get('/api/v1/explores/:id', (req, res) => {
+  console.log(req.params);
+
+  const id = req.params.id * 1;
+
+  if (id > explores.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  const explore = explores.find((el) => el.id === id);
+
+  res.status(200).json({
+    status: 'success',
+    //   results: explores.length,
+    data: {
+      explore,
+    },
+  });
+});
+
 app.post('/api/v1/explores', (req, res) => {
   //   console.log(req.body);
   const newId = explores[explores.length - 1].id + 1;
