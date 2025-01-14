@@ -17,7 +17,7 @@ const explores = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
-app.get('/api/v1/explores', (req, res) => {
+const getAllExplores = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: explores.length,
@@ -25,21 +25,20 @@ app.get('/api/v1/explores', (req, res) => {
       explores,
     },
   });
-});
+};
 
-app.get('/api/v1/explores/:id', (req, res) => {
+const getExplore = (req, res) => {
   console.log(req.params);
-
   const id = req.params.id * 1;
+  const explore = explores.find((el) => el.id === id);
 
-  if (id > explores.length) {
+  //   if (id > explores.length) {
+  if (!explore) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
     });
   }
-
-  const explore = explores.find((el) => el.id === id);
 
   res.status(200).json({
     status: 'success',
@@ -48,9 +47,9 @@ app.get('/api/v1/explores/:id', (req, res) => {
       explore,
     },
   });
-});
+};
 
-app.post('/api/v1/explores', (req, res) => {
+const createExplore = (req, res) => {
   //   console.log(req.body);
   const newId = explores[explores.length - 1].id + 1;
   const newExplore = Object.assign({ id: newId }, req.body);
@@ -70,7 +69,48 @@ app.post('/api/v1/explores', (req, res) => {
   );
 
   //   res.send('Done');
-});
+};
+
+const updateExplore = (req, res) => {
+  if (req.params.id * 1 > explores.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'invalid ID',
+    });
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      explore: '<Updated explore here...>',
+    },
+  });
+};
+
+const deleteExplore = (req, res) => {
+  if (req.params.id * 1 > explores.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'invalid ID',
+    });
+  }
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+};
+
+// app.get('/api/v1/explores', getAllExplores);
+// app.get('/api/v1/explores/:id', getExplore);
+// app.post('/api/v1/explores', createExplore);
+// app.patch('/api/v1/explores/:id', updateExplore);
+// app.delete('/api/v1/explores/:id', deleteExplore);
+
+app.route('/api/v1/explores').get(getAllExplores).post(createExplore);
+app
+  .route('/api/v1/explores/:id')
+  .get(getExplore)
+  .patch(updateExplore)
+  .delete(deleteExplore);
 
 const port = 8000;
 app.listen(port, () => {
