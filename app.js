@@ -1,10 +1,24 @@
 const fs = require('fs');
 
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
+
+//1. middlewares
+app.use(morgan('dev'));
+
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log('Hello from middleware');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 // app.get('/', (req, res) => {
 //   res.status(200).json({ message: 'Hello from topzee', app: 'first app' });
 // });
@@ -17,9 +31,13 @@ const explores = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+//routes handlers
+
 const getAllExplores = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: explores.length,
     data: {
       explores,
@@ -105,12 +123,15 @@ const deleteExplore = (req, res) => {
 // app.patch('/api/v1/explores/:id', updateExplore);
 // app.delete('/api/v1/explores/:id', deleteExplore);
 
+//Routes
 app.route('/api/v1/explores').get(getAllExplores).post(createExplore);
 app
   .route('/api/v1/explores/:id')
   .get(getExplore)
   .patch(updateExplore)
   .delete(deleteExplore);
+
+// Start Server
 
 const port = 8000;
 app.listen(port, () => {
