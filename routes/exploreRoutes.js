@@ -1,0 +1,18 @@
+const express = require('express');
+const exploreController = require('./../controllers/exploreController');
+
+//router
+
+const router = express.Router();
+
+router
+  .route('/')
+  .get(exploreController.getAllExplores)
+  .post(exploreController.createExplore);
+router
+  .route('/:id')
+  .get(exploreController.getExplore)
+  .patch(exploreController.updateExplore)
+  .delete(exploreController.deleteExplore);
+
+module.exports = router;
