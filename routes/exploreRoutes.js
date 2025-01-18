@@ -5,6 +5,8 @@ const exploreController = require('./../controllers/exploreController');
 
 const router = express.Router();
 
+router.param('id', exploreController.checkID);
+
 router
   .route('/')
   .get(exploreController.getAllExplores)

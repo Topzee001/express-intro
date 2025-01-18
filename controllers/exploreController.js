@@ -5,6 +5,17 @@ const explores = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+exports.checkID = (req, res, next, val) => {
+  console.log(`Tour id is: ${val}`);
+  if (req.params.id * 1 > explores.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'invalid ID',
+    });
+  }
+  next();
+};
+
 exports.getAllExplores = (req, res) => {
   console.log(req.requestTime);
   res.status(200).json({
@@ -21,14 +32,6 @@ exports.getExplore = (req, res) => {
   console.log(req.params);
   const id = req.params.id * 1;
   const explore = explores.find((el) => el.id === id);
-
-  //   if (id > explores.length) {
-  if (!explore) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -62,12 +65,6 @@ exports.createExplore = (req, res) => {
 };
 
 exports.updateExplore = (req, res) => {
-  if (req.params.id * 1 > explores.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'invalid ID',
-    });
-  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -77,12 +74,6 @@ exports.updateExplore = (req, res) => {
 };
 
 exports.deleteExplore = (req, res) => {
-  if (req.params.id * 1 > explores.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'invalid ID',
-    });
-  }
   res.status(204).json({
     status: 'success',
     data: null,
