@@ -10,7 +10,7 @@ router.param('id', exploreController.checkID);
 router
   .route('/')
   .get(exploreController.getAllExplores)
-  .post(exploreController.createExplore);
+  .post(exploreController.checkBody, exploreController.createExplore);
 router
   .route('/:id')
   .get(exploreController.getExplore)
