@@ -1,77 +1,72 @@
 //explore handlers
-const fs = require('fs');
+const Explore = require('../models/exploreModel');
 
-const explores = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
+exports.getAllExplores = async (req, res) => {
+  try {
+    // console.log(req.requestTime);
+    const explores = await Explore.find();
 
-exports.checkID = (req, res, next, val) => {
-  console.log(`Tour id is: ${val}`);
-  if (req.params.id * 1 > explores.length) {
-    return res.status(404).json({
+    res.status(200).json({
+      status: 'success',
+      // requestedAt: req.requestTime,
+      results: explores.length,
+      data: {
+        explores,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
       status: 'fail',
-      message: 'invalid ID',
+      message: err,
     });
   }
-  next();
 };
 
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
-    return res.status(400).json({
+exports.getExplore = async (req, res) => {
+  // console.log(req.params);
+  // const id = req.params.id * 1;
+  // const explore = explores.find((el) => el.id === id);
+
+  try {
+    const explore = await Explore.findById(req.params.id);
+    // Explore.findOne({ _id: req.params.id });
+
+    res.status(200).json({
+      status: 'success',
+      //   results: explores.length,
+      data: {
+        explore,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
       status: 'fail',
-      message: 'missing name or price',
+      message: err,
     });
   }
-  next();
 };
 
-exports.getAllExplores = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: explores.length,
-    data: {
-      explores,
-    },
-  });
-};
-
-exports.getExplore = (req, res) => {
-  console.log(req.params);
-  const id = req.params.id * 1;
-  const explore = explores.find((el) => el.id === id);
-
-  res.status(200).json({
-    status: 'success',
-    //   results: explores.length,
-    data: {
-      explore,
-    },
-  });
-};
-
-exports.createExplore = (req, res) => {
+exports.createExplore = async (req, res) => {
   //   console.log(req.body);
-  const newId = explores[explores.length - 1].id + 1;
-  const newExplore = Object.assign({ id: newId }, req.body);
+  try {
+    // const newExplore = new Explore({});
+    // newExplore.save();
 
-  explores.push(newExplore);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(explores),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          explore: newExplore,
-        },
-      });
-    }
-  );
+    const newExplore = await Explore.create(req.body);
 
-  //   res.send('Done');
+    res.status(201).json({
+      status: 'success',
+      data: {
+        explore: newExplore,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      // message: err,
+      message: 'Invalid data sent!',
+    });
+  }
 };
 
 exports.updateExplore = (req, res) => {

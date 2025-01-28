@@ -22,25 +22,8 @@ mongoose
     // console.log(con.connections);
     console.log('DB connection successful'),
   );
-// creating data(explore) model using schema
-const exploreSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    //for error when field is missing
-    required: [true, 'An Explore name is required'],
-    unique: true,
-  },
-  rating: {
-    type: Number,
-    default: 4.5,
-  },
-  price: { type: Number, required: 'An explore must have a price' },
-});
 
-//create a model out of the schema
-const Explore = mongoose.model('Explore', exploreSchema);
 // Start Server
-
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
