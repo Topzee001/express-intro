@@ -69,18 +69,40 @@ exports.createExplore = async (req, res) => {
   }
 };
 
-exports.updateExplore = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      explore: '<Updated explore here...>',
-    },
-  });
+exports.updateExplore = async (req, res) => {
+  try {
+    const explore = await Explore.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        explore,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      // message: err,
+      message: 'Invalid data sent!',
+    });
+  }
 };
 
-exports.deleteExplore = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+exports.deleteExplore = async (req, res) => {
+  try {
+    await Explore.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      // message: err,
+      message: 'Invalid data sent!',
+    });
+  }
 };
