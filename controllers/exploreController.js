@@ -1,11 +1,27 @@
 //explore handlers
+const { query } = require('express');
 const Explore = require('../models/exploreModel');
 
 exports.getAllExplores = async (req, res) => {
   try {
-    // console.log(req.requestTime);
-    const explores = await Explore.find();
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
 
+    // console.log(req.query, queryObj);
+    // console.log(req.requestTime);
+    const query = await Explore.find(queryObj);
+
+    // const query = await Explore.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    //execute query
+    const explores = await query;
+
+    //send response
     res.status(200).json({
       status: 'success',
       // requestedAt: req.requestTime,
