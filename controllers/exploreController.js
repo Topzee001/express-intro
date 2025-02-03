@@ -4,22 +4,36 @@ const Explore = require('../models/exploreModel');
 
 exports.getAllExplores = async (req, res) => {
   try {
+    console.log(req.query);
+    //build the query
+    // filtering
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // console.log(req.query, queryObj);
     // console.log(req.requestTime);
-    const query = await Explore.find(queryObj);
+
+    // advanced filtering
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log(JSON.parse(queryStr));
+
+    // { difficulty: 'easy', duration: {$gte: 5}
+    // { difficulty: 'easy', duration: {gte: 5} }
+    // gte, gt, lte, lt
+
+    // const query = await Explore.find(queryObj);
+    const query = await Explore.find(JSON.parse(queryStr));
+    //execute query
+    const explores = await query;
 
     // const query = await Explore.find()
     //   .where('duration')
     //   .equals(5)
     //   .where('difficulty')
     //   .equals('easy');
-
-    //execute query
-    const explores = await query;
 
     //send response
     res.status(200).json({
