@@ -8,6 +8,10 @@ const router = express.Router();
 // router.param('id', exploreController.checkID);
 
 router
+  .route('/top-5-cheap')
+  .get(exploreController.aliasTopExplores, exploreController.getAllExplores);
+
+router
   .route('/')
   .get(exploreController.getAllExplores)
   .post(exploreController.createExplore);
