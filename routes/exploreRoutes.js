@@ -11,6 +11,8 @@ router
   .route('/top-5-cheap')
   .get(exploreController.aliasTopExplores, exploreController.getAllExplores);
 
+router.route('/explore-stats').get(exploreController.getExploreStats);
+
 router
   .route('/')
   .get(exploreController.getAllExplores)
