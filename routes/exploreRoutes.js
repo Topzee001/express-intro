@@ -12,6 +12,7 @@ router
   .get(exploreController.aliasTopExplores, exploreController.getAllExplores);
 
 router.route('/explore-stats').get(exploreController.getExploreStats);
+router.route('/monthly-plan/:year').get(exploreController.getMonthlyPlan);
 
 router
   .route('/')
