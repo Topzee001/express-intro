@@ -163,8 +163,8 @@ exports.updateExplore = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      // message: err,
-      message: 'Invalid data sent!',
+      message: err,
+      // message: 'Invalid data sent!',
     });
   }
 };
@@ -190,7 +190,8 @@ exports.getExploreStats = async (req, res) => {
     const stats = await Explore.aggregate([
       {
         $match: {
-          ratingAverage: { $gte: 4.5 },
+          // ratingAverage: { $gte: 4.5 },
+          ratingAverage: { $gte: 0 },
         },
       },
       {
